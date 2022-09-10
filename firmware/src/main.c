@@ -101,7 +101,7 @@
 //definindo constantes e varivaveis globais
 // change this to make the song slower or faster
 volatile char start_flag = 0;
-volatile char selecao_flag;
+volatile char selecao_flag = 0;
 
 // notes of the moledy followed by the duration.
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
@@ -219,11 +219,11 @@ int merry[] = {
 #define START_PIO_IDX         31
 #define START_PIO_IDX_MASK   (1u << START_PIO_IDX )
 
-//botao selecao
-#define SELECAO_PIO                       PIOA
-#define SELECAO_PIO_ID                    ID_PIOA
-#define SELECAO_PIO_IDX                   19
-#define SELECAO_PIO_IDX_MASK              (1u << START_PIO_IDX )
+////botao selecao
+#define SELECAO_PIO            PIOD
+#define SELECAO_PIO_ID       ID_PIOD
+#define SELECAO_PIO_IDX   			28
+#define SELECAO_PIO_IDX_MASK (1u << SELECAO_PIO_IDX)
 
 // LED
 #define LED_PIO      PIOC
@@ -288,7 +288,13 @@ void start_callback(void)
 }
 
 void selecao_callback(void){
-	selecao_flag=1;
+	thisNote=0;
+	if (selecao_flag){
+		selecao_flag = 0;
+	}
+	else{
+		selecao_flag = 1;
+	}
 }
 
 // this calculates the duration of a whole note in ms
@@ -395,7 +401,6 @@ int main (void)
 	gfx_mono_ssd1306_init();
 	
 	// Escreve na tela um circulo e um texto
-	gfx_mono_draw_filled_circle(20, 16, 16, GFX_PIXEL_SET, GFX_WHOLE);
 	gfx_mono_draw_string("lister", 50,16, &sysfont);
 	// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
 	int notes_h = sizeof(happy) / sizeof(happy[0]) / 2;
@@ -403,9 +408,24 @@ int main (void)
 	
 	
 	while(1) {
+		if(!selecao_flag){
+			gfx_mono_draw_string("     ", 50,16, &sysfont);
+			gfx_mono_draw_string("Happy", 50,16, &sysfont);
+			}
+		 else{
+			gfx_mono_draw_string("      ", 50,16, &sysfont);
+			gfx_mono_draw_string("Merry", 50,16, &sysfont);
+			}
 		if (start_flag){
+			if(!selecao_flag){
 				run(happy, notes_h);
 				start_flag = 0;
+			}else{
+				run(merry,notes_h);
+				start_flag=0;
+			}
+			
+			
 		}
 		
 	}
