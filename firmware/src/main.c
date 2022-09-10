@@ -98,6 +98,115 @@
 #define NOTE_DS8 4978
 #define REST      0
 
+//definindo constantes e varivaveis globais
+// change this to make the song slower or faster
+volatile char start_flag = 0;
+volatile char selecao_flag;
+
+// notes of the moledy followed by the duration.
+// a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
+// !!negative numbers are used to represent dotted notes,
+// so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
+
+
+
+
+// notes of the moledy followed by the duration.
+// a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
+// !!negative numbers are used to represent dotted notes,
+// so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
+
+int happy[] = {
+
+	// Happy Birthday
+	// Score available at https://musescore.com/user/8221/scores/26906
+
+	NOTE_C4,4, NOTE_C4,8,
+	NOTE_D4,-4, NOTE_C4,-4, NOTE_F4,-4,
+	NOTE_E4,-2, NOTE_C4,4, NOTE_C4,8,
+	NOTE_D4,-4, NOTE_C4,-4, NOTE_G4,-4,
+	NOTE_F4,-2, NOTE_C4,4, NOTE_C4,8,
+
+	NOTE_C5,-4, NOTE_A4,-4, NOTE_F4,-4,
+	NOTE_E4,-4, NOTE_D4,-4, NOTE_AS4,4, NOTE_AS4,8,
+	NOTE_A4,-4, NOTE_F4,-4, NOTE_G4,-4,
+	NOTE_F4,-2,
+	
+};
+
+int merry[] = {
+
+	// We Wish You a Merry Christmas
+	// Score available at https://musescore.com/user/6208766/scores/1497501
+	
+	NOTE_C5,4, //1
+	NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+	NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+	NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+	NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+	NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,
+	NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+
+	NOTE_F5,2, NOTE_C5,4, //8
+	NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+	NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+	NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+	NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+	NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,
+	NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, NOTE_C5,4,
+
+	NOTE_F5,4, NOTE_F5,4, NOTE_F5,4,//17
+	NOTE_E5,2, NOTE_E5,4,
+	NOTE_F5,4, NOTE_E5,4, NOTE_D5,4,
+	NOTE_C5,2, NOTE_A5,4,
+	NOTE_AS5,4, NOTE_A5,4, NOTE_G5,4,
+	NOTE_C6,4, NOTE_C5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, NOTE_C5,4,
+	NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+	NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+	
+	NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8, //27
+	NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+	NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,
+	NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, NOTE_C5,4,
+	NOTE_F5,4, NOTE_F5,4, NOTE_F5,4,
+	NOTE_E5,2, NOTE_E5,4,
+	NOTE_F5,4, NOTE_E5,4, NOTE_D5,4,
+	
+	NOTE_C5,2, NOTE_A5,4,//36
+	NOTE_AS5,4, NOTE_A5,4, NOTE_G5,4,
+	NOTE_C6,4, NOTE_C5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, NOTE_C5,4,
+	NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+	NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+	NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+	NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+	
+	NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,//45
+	NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, NOTE_C5,4,
+	NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+	NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+	NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+	NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+	
+	NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8, //53
+	NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+	NOTE_F5,2, REST,4
+};
+// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
+// there are two values per note (pitch and duration), so for each note there are four bytes
+
+
 //buzzer
 #define BUZZER_PIO			  PIOA
 #define BUZZER_PIO_ID         ID_PIOA
@@ -124,98 +233,7 @@
 
 int freq;
 int t;
-
-int melody[] = {
-
-	// Super Mario Bros theme
-	// Score available at https://musescore.com/user/2123/scores/2145
-	// Theme by Koji Kondo
-	
-	
-	NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,8, //1
-	NOTE_G5,4, REST,4, NOTE_G4,8, REST,4,
-	NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // 3
-	NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
-	NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
-	REST,8, NOTE_E5,4,NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
-	NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // repeats from 3
-	NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
-	NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
-	REST,8, NOTE_E5,4,NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
-
-	
-	REST,4, NOTE_G5,8, NOTE_FS5,8, NOTE_F5,8, NOTE_DS5,4, NOTE_E5,8,//7
-	REST,8, NOTE_GS4,8, NOTE_A4,8, NOTE_C4,8, REST,8, NOTE_A4,8, NOTE_C5,8, NOTE_D5,8,
-	REST,4, NOTE_DS5,4, REST,8, NOTE_D5,-4,
-	NOTE_C5,2, REST,2,
-
-	REST,4, NOTE_G5,8, NOTE_FS5,8, NOTE_F5,8, NOTE_DS5,4, NOTE_E5,8,//repeats from 7
-	REST,8, NOTE_GS4,8, NOTE_A4,8, NOTE_C4,8, REST,8, NOTE_A4,8, NOTE_C5,8, NOTE_D5,8,
-	REST,4, NOTE_DS5,4, REST,8, NOTE_D5,-4,
-	NOTE_C5,2, REST,2,
-
-	NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4,//11
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
-
-	NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,8, NOTE_E5,8,//13
-	REST,1,
-	NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4,
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
-	NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,4,
-	NOTE_G5,4, REST,4, NOTE_G4,4, REST,4,
-	NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // 19
-	
-	NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
-	NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
-	REST,8, NOTE_E5,4, NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
-
-	NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // repeats from 19
-	NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
-	NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
-	REST,8, NOTE_E5,4, NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
-
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,//23
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
-	
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //26
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
-	NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
-
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,//repeats from 23
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
-	
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //26
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
-	NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
-	NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,8, NOTE_E5,8,
-	REST,1,
-
-	NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4, //33
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
-	NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,4,
-	NOTE_G5,4, REST,4, NOTE_G4,4, REST,4,
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
-	
-	NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //40
-	NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
-	NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
-	NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
-	NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
-	
-	//game over sound
-	NOTE_C5,-4, NOTE_G4,-4, NOTE_E4,4, //45
-	NOTE_A4,-8, NOTE_B4,-8, NOTE_A4,-8, NOTE_GS4,-8, NOTE_AS4,-8, NOTE_GS4,-8,
-	NOTE_G4,8, NOTE_D4,8, NOTE_E4,-2,
-
-};
+int thisNote = 0;
 
 void set_buzzer(){
 	pio_set(BUZZER_PIO, BUZZER_PIO_IDX_MASK);
@@ -239,39 +257,44 @@ int get_selecao(){
 }
 
 void buzzer_test(int freq){
-	double t=(double) 1/freq;
-	double t_us=(10**6)*((double)t);
-	pio_set(BUZZER_PIO,BUZZER_PIO_IDX_MASK);
-	delay_us(t_us/2);
-	pio_clear(BUZZER_PIO,BUZZER_PIO_IDX_MASK);
-	delay_us(t_us/2);
+	double t_ms=(1E6)/(double) freq;
+	set_buzzer();
+	delay_us(t_ms/2);
+	clear_buzzer();
+	delay_us(t_ms/2);
 }
 
 void tone(int freq, int t){
-	double t_1=(double) t/(1000);
-	double pulse_number=t_1*freq;
-	for(int i=0;i<(int) pulse_number;i++){
+	double t_1=(double) t/(1E3);
+	int pulse_number=t_1* ((double) freq);
+	for(int i=0;i<pulse_number;i++){
 		buzzer_test(freq);
 	}
 	
 }
 
-volatile char start_flag;
-volatile char selecao_flag;
-volatile char buzzer_flag;
 
 void start_callback(void);
 void selecao_callback(void);
 
 void start_callback(void)
 {
-	start_flag=1;
+	if (start_flag){
+		start_flag = 0;
+	}
+	else{
+		start_flag = 1;
+	}
 }
 
 void selecao_callback(void){
 	selecao_flag=1;
 }
 
+// this calculates the duration of a whole note in ms
+int wholenote = (60000 * 4) / 140;
+
+int divider = 0, noteDuration = 0;
 
 
 void init(void){
@@ -290,7 +313,7 @@ void init(void){
 	pmc_enable_periph_clk(LED_PIO_ID);
 	pio_configure(LED_PIO, PIO_OUTPUT_0, LED_IDX_MASK, PIO_DEFAULT);
 	
-	// Configura o LED
+	// Configura o buzzer
 	pmc_enable_periph_clk(BUZZER_PIO_ID);
 	pio_configure(BUZZER_PIO, PIO_OUTPUT_0, BUZZER_PIO_IDX_MASK, PIO_DEFAULT);
 
@@ -333,6 +356,32 @@ void init(void){
 	
 }
 
+void run(int melody[], int notes){
+	// there are two values per note (pitch and duration), so for each note there are four bytes
+	// iterate over the notes of the melody.
+	// Remember, the array is twice the number of notes (notes + durations)
+	for (thisNote; thisNote < notes * 2; thisNote = thisNote + 2) {
+		if (start_flag == 0){
+			break;
+		}
+		// calculates the duration of each note
+		divider = melody[thisNote + 1];
+		if (divider > 0) {
+			// regular note, just proceed
+			noteDuration = (wholenote) / divider;
+			} else if (divider < 0) {
+			// dotted notes are represented with negative durations!!
+			noteDuration = (wholenote) / abs(divider);
+			noteDuration *= 1.5; // increases the duration in half for dotted notes
+		}
+
+		// we only play the note for 90% of the duration, leaving 10% as a pause
+		tone(melody[thisNote], noteDuration * 0.9);
+
+		// Wait for the specief duration before playing the next note.
+		delay_ms(noteDuration);
+	}
+}
 
 
 int main (void)
@@ -348,43 +397,16 @@ int main (void)
 	// Escreve na tela um circulo e um texto
 	gfx_mono_draw_filled_circle(20, 16, 16, GFX_PIXEL_SET, GFX_WHOLE);
 	gfx_mono_draw_string("lister", 50,16, &sysfont);
-    
-	
-	// change this to make the song slower or faster
-	int tempo = 200;
 	// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-	// there are two values per note (pitch and duration), so for each note there are four bytes
-	int notes = sizeof(melody) / sizeof(melody[0]) / 2;
-
-	// this calculates the duration of a whole note in ms
-	int wholenote = (60000 * 4) / 200;
-
-	int divider = 0, noteDuration = 0;
-	/* Insert application code here, after the board has been initialized. */
+	int notes_h = sizeof(happy) / sizeof(happy[0]) / 2;
+	int notes_l = sizeof(merry) / sizeof(merry[0]) / 2;
+	
+	
 	while(1) {
-		
-		// iterate over the notes of the melody.
-		// Remember, the array is twice the number of notes (notes + durations)
-		for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2) {
-
-			// calculates the duration of each note
-			divider = melody[thisNote + 1];
-			if (divider > 0) {
-				// regular note, just proceed
-				noteDuration = (wholenote) / divider;
-				} else if (divider < 0) {
-				// dotted notes are represented with negative durations!!
-				noteDuration = (wholenote) / abs(divider);
-				noteDuration *= 1.5; // increases the duration in half for dotted notes
-			}
-
-			// we only play the note for 90% of the duration, leaving 10% as a pause
-			tone(melody[thisNote], noteDuration * 0.9);
-
-			// Wait for the specief duration before playing the next note.
-			delay_ms(noteDuration*0.1);
-
-			
+		if (start_flag){
+				run(happy, notes_h);
+				start_flag = 0;
 		}
+		
 	}
 }
