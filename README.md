@@ -16,18 +16,25 @@ TODO: Aualizar pinos
 
 | Função  | PINO (ex: PA11) |
 |---------|-----------------|
-| BUZZER  |                 |
-| START   |                 |
-| SELEÇÃO |                 |
+| BUZZER  |PIOA 24          |
+| START   |PIOC 31          |
+| SELEÇÃO |PIOD 28          |
+| LED     |PIOC 8           |
 
 ### Imagem da montagem
 
-TODO: Inserir imagem do sistema montado
+TODO: 
+![image](https://user-images.githubusercontent.com/72675303/189547881-cd5332c9-8c1c-41b3-a687-18e16174efa1.png)
+
 
 ### Vídeo do projeto
 
-TODO: Inserir link para vídeo do projeto funcionando
+TODO: 
+https://youtu.be/ZwyeyP6VzAU
 
 ### Músicas e Direitos autorais
 
-TODO: Listar músicas e dar crédio da onde saiu:
+TODO: 
+Link referencia para a musica Happy Birthday:https://github.com/robsoncouto/arduino-songs/blob/master/happybirthday/happybirthday.ino
+
+Link referencia para a musica merry christmas: https://github.com/robsoncouto/arduino-songs/blob/master/merrychristmas/merrychristmas.ino
