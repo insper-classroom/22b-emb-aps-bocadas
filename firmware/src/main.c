@@ -4,6 +4,15 @@
 #include "gfx_mono_text.h"
 #include "sysfont.h"
 
+// notes of the moledy followed by the duration.
+// a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
+// !!negative numbers are used to represent dotted notes,
+// so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
+//array happy birthday
+
+// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
+// there are two values per note (pitch and duration), so for each note there are four bytes
+// this calculates the duration of a whole note in ms
 
 
 //define notas
@@ -98,24 +107,43 @@
 #define NOTE_DS8 4978
 #define REST      0
 
+//buzzer
+#define BUZZER_PIO			  PIOA
+#define BUZZER_PIO_ID         ID_PIOA
+#define BUZZER_PIO_IDX        24
+#define BUZZER_PIO_IDX_MASK   (1<< BUZZER_PIO_IDX)
+
+//botao start
+#define START_PIO             PIOC
+#define START_PIO_ID          ID_PIOC
+#define START_PIO_IDX         31
+#define START_PIO_IDX_MASK   (1u << START_PIO_IDX )
+
+////botao selecao
+#define SELECAO_PIO            PIOD
+#define SELECAO_PIO_ID       ID_PIOD
+#define SELECAO_PIO_IDX   			28
+#define SELECAO_PIO_IDX_MASK (1u << SELECAO_PIO_IDX)
+
+// LED
+#define LED_PIO      PIOC
+#define LED_PIO_ID   ID_PIOC
+#define LED_IDX      8
+#define LED_IDX_MASK (1 << LED_IDX)
+
 //definindo constantes e varivaveis globais
-// change this to make the song slower or faster
+
 volatile char start_flag = 0;
 volatile char selecao_flag = 0;
 
-// notes of the moledy followed by the duration.
-// a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
-// !!negative numbers are used to represent dotted notes,
-// so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
+int wholenote = (60000 * 4) / 140;
 
+int divider = 0, noteDuration = 0;
+int thisNote = 0;
+int freq;
+int t;
 
-
-
-// notes of the moledy followed by the duration.
-// a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
-// !!negative numbers are used to represent dotted notes,
-// so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-
+//array happy birthday
 int happy[] = {
 
 	// Happy Birthday
@@ -133,7 +161,7 @@ int happy[] = {
 	NOTE_F4,-2,
 	
 };
-
+//array merry Christmas
 int merry[] = {
 
 	// We Wish You a Merry Christmas
@@ -203,59 +231,43 @@ int merry[] = {
 	NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
 	NOTE_F5,2, REST,4
 };
-// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-// there are two values per note (pitch and duration), so for each note there are four bytes
+//inicializando funções 
+void start_callback(void);
+void selecao_callback(void);
+void set_buzzer(void);
+void clear_buzzer(void);
+void buzzer_test(freq);
+void tone(freq,t);
+void start_callback(void);
+void selecao_callback(void);
+void pisca_led(int n,int freq);
+void init(void);
+void run(int melody[], int notes);
 
 
-//buzzer
-#define BUZZER_PIO			  PIOA
-#define BUZZER_PIO_ID         ID_PIOA
-#define BUZZER_PIO_IDX        24
-#define BUZZER_PIO_IDX_MASK   (1<< BUZZER_PIO_IDX)
 
-//botao start
-#define START_PIO             PIOC
-#define START_PIO_ID          ID_PIOC
-#define START_PIO_IDX         31
-#define START_PIO_IDX_MASK   (1u << START_PIO_IDX )
-
-////botao selecao
-#define SELECAO_PIO            PIOD
-#define SELECAO_PIO_ID       ID_PIOD
-#define SELECAO_PIO_IDX   			28
-#define SELECAO_PIO_IDX_MASK (1u << SELECAO_PIO_IDX)
-
-// LED
-#define LED_PIO      PIOC
-#define LED_PIO_ID   ID_PIOC
-#define LED_IDX      8
-#define LED_IDX_MASK (1 << LED_IDX)
-
-int freq;
-int t;
-int thisNote = 0;
-
+//funcoes de toque do buzzer
 void set_buzzer(){
 	pio_set(BUZZER_PIO, BUZZER_PIO_IDX_MASK);
 }
 void clear_buzzer(){
 	pio_clear(BUZZER_PIO, BUZZER_PIO_IDX_MASK);
 }
-
+//status do botao start/stop
 int get_startstop(){
 	if(!pio_get(START_PIO,PIO_INPUT,START_PIO_IDX_MASK)){
 		return 1;
 	}
 	return 0;
 }
-
+//status do botao de selecao
 int get_selecao(){
 	if(!pio_get(SELECAO_PIO,PIO_INPUT,SELECAO_PIO_IDX_MASK)){
 		return 1;
 	}
 	return 0;
 }
-
+//tocar o buzzer
 void buzzer_test(int freq){
 	double t_ms=(1E6)/(double) freq;
 	set_buzzer();
@@ -263,7 +275,7 @@ void buzzer_test(int freq){
 	clear_buzzer();
 	delay_us(t_ms/2);
 }
-
+//funcao tocar cada tom
 void tone(int freq, int t){
 	double t_1=(double) t/(1E3);
 	int pulse_number=t_1* ((double) freq);
@@ -274,9 +286,7 @@ void tone(int freq, int t){
 }
 
 
-void start_callback(void);
-void selecao_callback(void);
-
+//callback botao start/stop
 void start_callback(void)
 {
 	if (start_flag){
@@ -286,7 +296,7 @@ void start_callback(void)
 		start_flag = 1;
 	}
 }
-
+//callback do botao-selecao-musical
 void selecao_callback(void){
 	thisNote=0;
 	if (selecao_flag){
@@ -297,12 +307,8 @@ void selecao_callback(void){
 	}
 }
 
-// this calculates the duration of a whole note in ms
-int wholenote = (60000 * 4) / 140;
 
-int divider = 0, noteDuration = 0;
-
-
+//configuracoes dos pinos
 void init(void){
 
 	// Inicializa clock
@@ -361,7 +367,7 @@ void init(void){
 
 	
 }
-
+//funcao para rodas as notas da musica em um loop
 void run(int melody[], int notes){
 	// there are two values per note (pitch and duration), so for each note there are four bytes
 	// iterate over the notes of the melody.
@@ -388,8 +394,21 @@ void run(int melody[], int notes){
 		delay_ms(noteDuration);
 	}
 }
-
-
+//piscar o led
+void pisca_led(int n, int f) {
+	// Calcula tempo baseado na frequencia
+	double t = ((double)n / f)*1000;
+	gfx_mono_draw_horizontal_line(0, 10, 8*(n-1), GFX_PIXEL_SET);
+	for (int i = 0; i < n; i++) {
+		gfx_mono_draw_horizontal_line(0, 10, 8*i, GFX_PIXEL_CLR);
+		pio_clear(LED_PIO, LED_IDX_MASK);
+		delay_ms(t);
+		pio_set(LED_PIO, LED_IDX_MASK);
+		delay_ms(t);
+		
+	}
+}
+//main
 int main (void)
 {
 	board_init();
@@ -417,11 +436,14 @@ int main (void)
 			gfx_mono_draw_string("Merry", 50,16, &sysfont);
 			}
 		if (start_flag){
+			pisca_led(5,100);
 			if(!selecao_flag){
 				run(happy, notes_h);
+				pisca_led(5,100);
 				start_flag = 0;
 			}else{
 				run(merry,notes_h);
+				pisca_led(5,100);
 				start_flag=0;
 			}
 			
